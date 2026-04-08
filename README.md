@@ -67,6 +67,60 @@ Arbitrary tunings and capo positions per track. Multi-track songs (lead, rhythm,
 
 Early development. The [data model spec](docs/data-model-spec.md) is the current foundation — a working draft defining the layered architecture, type system, and edit model. Implementation is next.
 
+**Production:** https://libre-tab.pages.dev _(update with the real URL after first deploy)_
+
+## Development
+
+### Prerequisites
+
+- Node.js 22 (see `.nvmrc`)
+- pnpm 9 (auto-installed via Corepack from the `packageManager` field)
+
+### Run locally
+
+```bash
+pnpm install
+pnpm dev
+```
+
+The dev server starts at http://localhost:5173.
+
+### Typecheck, lint, and build
+
+```bash
+pnpm check    # svelte-check
+pnpm lint     # prettier --check + eslint
+pnpm build    # production build via Cloudflare adapter
+```
+
+## Deployment
+
+Deployed to **Cloudflare Pages** as the `libre-tab` project.
+
+### Automatic deploys
+
+Every push to `main` runs `.github/workflows/ci.yml`. On a green build, `.github/workflows/deploy.yml` runs `wrangler pages deploy apps/web/.svelte-kit/cloudflare --project-name=libre-tab --branch=main`.
+
+### Manual deploys
+
+**Actions → Deploy → Run workflow.** Optionally set the `branch` input to a non-`main` value for a preview deployment.
+
+From a local clone with wrangler authenticated:
+
+```bash
+pnpm build
+pnpm exec wrangler pages deploy apps/web/.svelte-kit/cloudflare --project-name=libre-tab --branch=<branch>
+```
+
+### Required GitHub Actions secrets
+
+| Secret                  | Description                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | API token with Pages:Edit. Create at https://dash.cloudflare.com/profile/api-tokens.              |
+| `CLOUDFLARE_ACCOUNT_ID` | Visible in the right sidebar of the Cloudflare dashboard.                                         |
+
+`GITHUB_TOKEN` is provided automatically.
+
 ## Contributing
 
 Libre Tab is built in the open. If you're interested in helping — whether that's the editor, renderer, data layer, infrastructure, or just reviewing the spec — open an issue or submit a PR.

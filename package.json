@@ -1,0 +1,22 @@
+{
+  "name": "libre-tab",
+  "private": true,
+  "version": "0.0.0",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@9.15.5",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "check": "pnpm --filter web check",
+    "lint": "pnpm --filter web lint",
+    "format": "pnpm --filter web format",
+    "preview": "pnpm --filter web preview"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
