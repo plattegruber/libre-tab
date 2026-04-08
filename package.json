@@ -15,8 +15,5 @@
     "lint": "pnpm --filter web lint",
     "format": "pnpm --filter web format",
     "preview": "pnpm --filter web preview"
-  },
-  "devDependencies": {
-    "wrangler": "^4.0.0"
   }
 }

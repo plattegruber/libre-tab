@@ -67,7 +67,7 @@ Arbitrary tunings and capo positions per track. Multi-track songs (lead, rhythm,
 
 Early development. The [data model spec](docs/data-model-spec.md) is the current foundation — a working draft defining the layered architecture, type system, and edit model. Implementation is next.
 
-**Production:** https://libre-tab.pages.dev _(update with the real URL after first deploy)_
+**Production:** https://libre-tab.<your-subdomain>.workers.dev _(update with the real URL after first deploy)_
 
 ## Development
 
@@ -95,31 +95,34 @@ pnpm build    # production build via Cloudflare adapter
 
 ## Deployment
 
-Deployed to **Cloudflare Pages** as the `libre-tab` project.
+Deployed to **Cloudflare Workers** (with static assets) as the `libre-tab` Worker. Cloudflare's Git integration ("Workers Builds") owns building and deploying — every push to `main` triggers a build inside Cloudflare, so there is no separate deploy workflow in this repo.
 
-### Automatic deploys
+### Worker config
 
-Every push to `main` runs `.github/workflows/ci.yml`. On a green build, `.github/workflows/deploy.yml` runs `wrangler pages deploy apps/web/.svelte-kit/cloudflare --project-name=libre-tab --branch=main`.
+`apps/web/wrangler.jsonc` is the source of truth for the Worker. It points `main` at the SvelteKit Cloudflare adapter output (`.svelte-kit/cloudflare/_worker.js`) and binds the same directory as the static `ASSETS` source. `apps/web/scripts/write-assetsignore.mjs` runs as part of `pnpm --filter web build` and writes a `.assetsignore` so Wrangler doesn't try to upload `_worker.js` itself as a public asset.
 
-### Manual deploys
+### Cloudflare Workers Builds settings
 
-**Actions → Deploy → Run workflow.** Optionally set the `branch` input to a non-`main` value for a preview deployment.
+Configure these once in the Cloudflare dashboard under the Worker's **Settings → Builds** tab:
 
-From a local clone with wrangler authenticated:
+| Field            | Value                                              |
+| ---------------- | -------------------------------------------------- |
+| Root directory   | `/`                                                |
+| Build command    | `pnpm install --frozen-lockfile && pnpm --filter web build` |
+| Deploy command   | `pnpm --filter web exec wrangler deploy`           |
+| Branch           | `main` (production); other branches deploy as preview environments |
+
+Cloudflare Workers Builds reads `apps/web/wrangler.jsonc` automatically because the deploy command runs from `apps/web`.
+
+### Manual deploys from a local clone
 
 ```bash
-pnpm build
-pnpm exec wrangler pages deploy apps/web/.svelte-kit/cloudflare --project-name=libre-tab --branch=<branch>
+pnpm install
+pnpm --filter web build
+pnpm --filter web exec wrangler deploy
 ```
 
-### Required GitHub Actions secrets
-
-| Secret                  | Description                                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | API token with Pages:Edit. Create at https://dash.cloudflare.com/profile/api-tokens.              |
-| `CLOUDFLARE_ACCOUNT_ID` | Visible in the right sidebar of the Cloudflare dashboard.                                         |
-
-`GITHUB_TOKEN` is provided automatically.
+(`wrangler login` first if not already authenticated.)
 
 ## Contributing
 
