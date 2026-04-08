@@ -1,0 +1,14 @@
+node_modules/
+.pnpm-store/
+.svelte-kit/
+build/
+dist/
+.wrangler/
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode/
+.idea/
+*.log
+pnpm-debug.log*
