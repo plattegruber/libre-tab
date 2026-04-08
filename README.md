@@ -67,7 +67,7 @@ Arbitrary tunings and capo positions per track. Multi-track songs (lead, rhythm,
 
 Early development. The [data model spec](docs/data-model-spec.md) is the current foundation — a working draft defining the layered architecture, type system, and edit model. Implementation is next.
 
-**Production:** https://libre-tab.<your-subdomain>.workers.dev _(update with the real URL after first deploy)_
+**Production:** https://libre-tab.gruberplatte.workers.dev
 
 ## Development
 
